@@ -7,31 +7,101 @@
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
-<body>
-	<div class="container">
+<body data-ng-app="myApp">
+	<div class="jumbotron">
+		<h1 class="text-center">Projet Bibliothèque</h1>
+		<p class="text-center">Application de gestion d'un bibliothèque</p>
+		<p class="text-center"><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+	<div class="container" data-ng-controller="myController">
 		<div class="bs-example bs-example-tabs" data-example-id="togglable-tabs"> 
 			<ul id="myTabs" class="nav nav-tabs" role="tablist"> 
 				<li role="presentation" class=""><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="false">Home</a></li> 
-				<li role="presentation" class="active"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">Profile</a></li>
-				<li role="presentation" class="dropdown"> <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="false">Dropdown <span class="caret"></span></a> 
-					<ul class="dropdown-menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents"> 
-						<li class=""><a href="#dropdown1" role="tab" id="dropdown1-tab" data-toggle="tab" aria-controls="dropdown1" aria-expanded="false">@fat</a></li> 
-						<li><a href="#dropdown2" role="tab" id="dropdown2-tab" data-toggle="tab" aria-controls="dropdown2" aria-expanded="false">@mdo</a></li> 
-					</ul> 
-				</li> 
+				<li role="presentation" class="active"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="true">Add Book</a></li>
+				<li role="presentation" class=""><a href="#dropdown1" role="tab" id="dropdown1e-tab" data-toggle="tab" aria-controls="dropdown1" aria-expanded="true">Book List</a></li>
 			</ul> 
 			<div id="myTabContent" class="tab-content"> 
 				<div role="tabpanel" class="tab-pane fade" id="home" aria-labelledby="home-tab"> 
+					<br>
 					<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p> 
 				</div> 
 				<div role="tabpanel" class="tab-pane fade active in" id="profile" aria-labelledby="profile-tab"> 
+					<br>
+					{{ test }}
 					<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p> 
 				</div> 
 				<div role="tabpanel" class="tab-pane fade" id="dropdown1" aria-labelledby="dropdown1-tab"> 
-					<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p> 
-				</div> 
-				<div role="tabpanel" class="tab-pane fade" id="dropdown2" aria-labelledby="dropdown2-tab"> 
-					<p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater. Lomo wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p> 
+					<br>
+					<h2 class="text-center">Book List</h2>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Titre</th>
+								<th>Auteur</th>
+								<th>Edit</th>
+								<th>Remove</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="book in bookList|orderBy:'bookTitle'">
+								<td>{{ book.bookTitle }}</td>
+								<td>{{ book.authorName }} {{ book.authorFirstname }}</td>
+								<td>
+									<button class="btn btn-primary" ng-click="editBook(book.bookId)">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+								</td>
+								<td>
+									<button class="btn btn-danger" ng-click="removeBook(book.bookId)">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<hr>
+					<button class="btn btn-success" ng-click="editBook('new')">
+					<span class="glyphicon glyphicon-user"></span>  Creer un livre
+					</button>
+					<hr>
+
+					<form class="form-horizontal" ng-hide="hideform">
+						<h3 ng-show="add">Ajouter un livre:</h3>
+						<h3 ng-show="edit">Editer un livre:</h3>
+						<input type="hidden" ng-model="idBook" placeholder="Titre">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Titre :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="title" placeholder="Titre">
+							</div>
+						</div> 
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Nom de l'auteur :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="name" placeholder="Nom de l'auteur">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Prenom de l'auteur :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="firstname" placeholder="Prenom  de l'auteur">
+							</div>
+						</div>
+						<div class="form-group" ng-hide="add">
+							<label class="col-sm-2 control-label">Date de retour :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="retDate" placeholder="Date de retour">
+							</div>
+						</div>
+						<hr>
+						<button class="btn btn-success" data-ng-click="addBook()" ng-show="add">
+							<span class="glyphicon glyphicon-save"></span>  Valider
+						</button>
+						<button class="btn btn-success" data-ng-click="updateBook()" ng-show="edit">
+							<span class="glyphicon glyphicon-save"></span>  Valider
+						</button>
+					</form>
 				</div> 
 			</div> 
 		</div>
@@ -40,6 +110,7 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/bibliotheque.js"></script>
 	<script type="text/javascript" src="js/npm.js"></script>
 </body>
 </html>
