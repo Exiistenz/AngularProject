@@ -4,28 +4,32 @@
 		"authorFirstname": "Victor",
 		"authorName": "Hugo",
 		"bookTitle": "Les Misérables",
-		"empDate": "18/02/15",
-		"returnDate": "18/01/15"
+		"empDate": "",
+		"returnDate": "",
+		"cote": "512"
 	}, {
 		"bookId": 2,
 		"authorFirstname": "Émile",
 		"authorName": "Zola",
 		"bookTitle": "L'Assommoir",
-		"empDate": "30/10/15",
-		"returnDate": "30/11/15"
+		"empDate": "",
+		"returnDate": "",
+		"cote": "500"
 	}, {
 		"bookId": 3,
 		"authorFirstname": "René",
 		"authorName": "Barjavel",
 		"bookTitle": "La Nuit des temps",
 		"empDate": "12/11/15",
-		"returnDate": "12/12/15"
+		"returnDate": "12/12/15",
+		"cote": "012"
 	}, {
 		"bookId": 4,
 		"authorFirstname": "Jules",
 		"authorName": "Verne",
 		"bookTitle": "Le Tour du monde en quatre-vingts jours",
 		"empDate": "02/12/15",
-		"returnDate": "02/01/15"
+		"returnDate": "02/01/15",
+		"cote": "012"
 	}]
 }

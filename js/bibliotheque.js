@@ -16,7 +16,6 @@ myApp.controller("myController", ["$scope", "$http", function ($scope, $http){
 	$scope.error = false; 
 	$scope.hideform = true; 
 
-
 	$scope.editBook = function(id) {
 		if ($scope.hideform)
 			$scope.hideform = false;
@@ -29,6 +28,7 @@ myApp.controller("myController", ["$scope", "$http", function ($scope, $http){
 			$scope.title = '';
 			$scope.firstname = '';
 			$scope.name = '';
+			$scope.cote = '';
 		} else {
 			$scope.add = false;
 			$scope.edit = true;
@@ -36,12 +36,14 @@ myApp.controller("myController", ["$scope", "$http", function ($scope, $http){
 			$scope.title = $scope.bookList[id-1].bookTitle;
 			$scope.firstname = $scope.bookList[id-1].authorFirstname;
 			$scope.name = $scope.bookList[id-1].authorName; 
+			$scope.empDate = $scope.bookList[id-1].empDate; 
 			$scope.retDate = $scope.bookList[id-1].returnDate; 
+			$scope.cote = $scope.bookList[id-1].bookCote; 
 		}
 	};
 
 	$scope.addBook = function(index) {		
-		$scope.bookList.push({'bookId': $scope.bookList.length+1,'authorFirstname': $scope.firstname,'authorName': $scope.name, 'bookTitle': $scope.title, 'empDate': '', 'returnDate': $scope.retDate});
+		$scope.bookList.push({'bookId': $scope.bookList.length+1,'authorFirstname': $scope.firstname,'authorName': $scope.name, 'bookTitle': $scope.title, 'empDate': '', 'returnDate': '', 'bookCote': $scope.cote});
 	};
 
 	$scope.removeBook = function(idBook) {		
@@ -52,6 +54,48 @@ myApp.controller("myController", ["$scope", "$http", function ($scope, $http){
 		$scope.bookList[$scope.id-1].bookTitle = $scope.title;
 		$scope.bookList[$scope.id-1].authorFirstname = $scope.firstname;
 		$scope.bookList[$scope.id-1].authorName = $scope.name;
-		$scope.bookList[$scope.id-1].returnDate = $scope.retDate;
+		$scope.bookList[$scope.id-1].bookCote = $scope.cote;
 	};
+
+	$scope.change = function() {
+		var book = JSON.parse($scope.selectedBook);
+		$("#hiddenId").val(book.bookId);
+		$("#reservNom").val(book.authorName);
+		$("#reservPre").val(book.authorFirstname);
+		$("#reservCote").val(book.bookTitle);
+    };
+
+    $scope.reservBook = function() {
+    	var id = $("#hiddenId").val();
+
+		$scope.bookList[id-1].empDate = convertDate($scope.dateNow); 
+		$scope.dateNow.setDate($scope.dateNow.getDate() + 15);
+		var newDate = new Date($scope.dateNow);
+
+		$scope.bookList[id-1].returnDate =convertDate(newDate);
+	};
+
+	function convertDate(date) {
+		var dd = date.getDate();
+		if (dd.toString().length == 1) 
+	    	dd = '0' + dd;
+
+		var mm = date.getMonth()+1;
+	    if (mm.toString().length == 1) 
+	    	mm = '0' + mm;
+
+	    var yyyy = date.getFullYear();
+	    var today = dd + '/' + mm + '/' + yyyy;
+		return today;
+	}
 }]);
+
+myApp.filter("availableBook", function(){
+	 	return function(enter)  {
+	  	var list = [];
+	  	for (var i=0;i<enter.length;i++)
+			if (enter[i].empDate == '') 
+				list.push(enter[i]);								
+	  	return list;
+	}
+});
