@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Projet Bibliothèque</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body data-ng-app="myApp">
+	<div class="jumbotron">
+		<h1 class="text-center">Projet Bibliothèque</h1>
+		<p class="text-center">Application de gestion d'un bibliothèque</p>
+		<p class="text-center"><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+	<div class="container" data-ng-controller="myController">
+		<div class="bs-example bs-example-tabs" data-example-id="togglable-tabs"> 
+			<ul id="myTabs" class="nav nav-tabs" role="tablist"> 
+				<li role="home" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li> 
+				<li role="reserv"><a href="#reserv" role="tab" id="reserv-tab" data-toggle="tab" aria-controls="reserv" aria-expanded="true">Reservation</a></li>
+				<li role="admin"><a href="#admin" role="tab" id="admin-tab" data-toggle="tab" aria-controls="admin" aria-expanded="true">Admin</a></li>
+			</ul> 
+			<div id="myTabContent" class="tab-content"> 
+				<div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab"> 
+					<br>
+					<h2 class="text-center">Nos livres disponibles</h2>
+
+					<label for="filter">Filtrer par&nbsp;: </label>
+					<select id="filter" name="filterBook" ng-model="filterBook">
+					    	<option value="bookTitle" selected>Titre</option>
+					    	<option value="authorName">Auteur</option>
+					    	<option value="cote">Cote</option>
+					</select>    
+					<hr>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Titre</th>
+								<th>Auteur</th>
+								<th>Cote</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="book in bookList|orderBy:filterBook|availableBook">
+								<td>{{ book.bookTitle }}</td>
+								<td>{{ book.authorFirstname }} {{ book.authorName }}</td>
+								<td>{{ book.bookCote }}</td>
+								<td>
+									<button class="btn btn-primary" onclick="">
+										<span class="glyphicon glyphicon-plus"></span>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div> 
+				<div role="reserv" class="tab-pane fade" id="reserv" aria-labelledby="reserv-tab"> 
+					<h2 class="text-center">Réservation de livre</h2>
+					<p class="text-center">Les livres réservés doivent être remis 2 semaines après leur emprunt.</p>
+					<br>		
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="findBook">Séléctionner un livre&nbsp;: </label>
+						<select id="findBook" class="form-control" ng-model="selectedBook" ng-change="change()">
+						    <option ng-repeat="book in bookList" value="{{ book }}" >{{ book.bookTitle }}</option>
+						</select> 
+					</div>   
+					<br>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Nom de l'auteur :</label>
+						<div class="col-sm-2">
+							<input id="hiddenId" type="text" class="hidden" value="{{ book.bookId }}">
+							<input id="reservNom" type="text" class="form-control" value="{{ book.authorName }}" placeholder="Nom de l'auteur">
+						</div>
+					</div>
+					<br>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Prenom de l'auteur :</label>
+						<div class="col-sm-2">
+							<input id="reservPre" class="form-control" type="text" value="{{ book.authorFirstname }}" placeholder="Prenom de l'auteur">
+						</div>
+					</div>
+					<br>
+					<div class="form-group" ng-hide="add">
+						<label class="col-sm-2 control-label">Cote :</label>
+						<div class="col-sm-2">
+							<input id="reservCote" type="text" class="form-control" value="{{ book.bookCote }}" placeholder="Cote">
+						</div>
+					</div>
+					<br>
+					<div class="text-center">
+						<button class="btn btn-primary" ng-click="reservBook()">Reserver</span></button>						
+					</div>
+				</div> 
+				<div role="admin" class="tab-pane fade" id="admin" aria-labelledby="admin-tab"> 
+					<br>
+					<h2 class="text-center">Admin</h2>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Titre</th>
+								<th>Auteur</th>
+								<th>Date Emprunt</th>
+								<th>Date Retour</th>
+								<th>Cote</th>
+								<th>Edit</th>
+								<th>Remove</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="book in bookList|orderBy:'bookTitle'">
+								<td>{{ book.bookTitle }}</td>
+								<td>{{ book.authorFirstname }} {{ book.authorName }}</td>
+								<td>{{ book.empDate }}</td>
+								<td>{{ book.returnDate }}</td>
+								<td>{{ book.bookCote }}</td>
+								<td>
+									<button class="btn btn-primary" ng-click="editBook(book.bookId)">
+										<span class="glyphicon glyphicon-pencil"></span>
+									</button>
+								</td>
+								<td>
+									<button class="btn btn-danger" ng-click="removeBook(book.bookId)">
+										<span class="glyphicon glyphicon-remove"></span>
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<hr>
+					<button class="btn btn-success" ng-click="editBook('new')">
+					<span class="glyphicon glyphicon-user"></span>  Creer un livre
+					</button>
+					<hr>
+
+					<form class="form-horizontal" ng-hide="hideform">
+						<h3 ng-show="add">Ajouter un livre:</h3>
+						<h3 ng-show="edit">Editer un livre:</h3>
+						<input type="hidden" ng-model="idBook" placeholder="Titre">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Titre :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="title" placeholder="Titre">
+							</div>
+						</div> 
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Nom de l'auteur :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="name" placeholder="Nom de l'auteur">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Prenom de l'auteur :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="firstname" placeholder="Prenom  de l'auteur">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Cote :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="cote" placeholder="Cote">
+							</div>
+						</div>
+						<div class="form-group" ng-hide="add">
+							<label class="col-sm-2 control-label">Date de retour :</label>
+							<div class="col-sm-10">
+								<input type="text" ng-model="retDate" placeholder="Date de retour">
+							</div>
+						</div>
+						<hr>
+						<button class="btn btn-success" data-ng-click="addBook()" ng-show="add">
+							<span class="glyphicon glyphicon-save"></span>  Valider
+						</button>
+						<button class="btn btn-success" data-ng-click="updateBook()" ng-show="edit">
+							<span class="glyphicon glyphicon-save"></span>  Valider
+						</button>
+					</form>
+				</div> 
+			</div> 
+		</div>
+	</div>
+
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/bibliotheque.js"></script>
+</body>
+</html>
